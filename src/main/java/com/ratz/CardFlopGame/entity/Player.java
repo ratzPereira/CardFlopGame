@@ -30,6 +30,9 @@ public class Player {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Deck> decks;
+
     @OneToMany(mappedBy = "player")
     private Set<Friendship> friends;
 
