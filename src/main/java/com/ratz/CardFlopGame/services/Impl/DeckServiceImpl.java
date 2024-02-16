@@ -1,4 +1,10 @@
 package com.ratz.CardFlopGame.services.Impl;
 
-public class DeckServiceImpl {
+import com.ratz.CardFlopGame.services.DeckService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@RequiredArgsConstructor
+@Service
+public class DeckServiceImpl implements DeckService {
 }
