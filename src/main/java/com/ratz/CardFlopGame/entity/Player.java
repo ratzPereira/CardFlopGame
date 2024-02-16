@@ -1,6 +1,8 @@
 package com.ratz.CardFlopGame.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,8 +22,16 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "Username cannot be empty")
+    @Column(unique = true)
     private String username;
+
+    @Email(message = "Email is not valid")
+    @NotEmpty(message = "Email cannot be empty")
+    @Column(unique = true)
     private String email;
+
+    @NotEmpty(message = "Password cannot be empty")
     private String password;
 
     private boolean enabled;
