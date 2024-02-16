@@ -7,5 +7,7 @@ import com.ratz.CardFlopGame.entity.Player;
 public interface PlayerService {
 
     PlayerDTO createPlayer(Player player);
-    
+
+    PlayerDTO getPlayerByEmail(String email);
+
 }

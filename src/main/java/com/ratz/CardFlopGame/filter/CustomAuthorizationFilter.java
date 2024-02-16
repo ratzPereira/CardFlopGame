@@ -32,7 +32,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
     public static final String HTTP_OPTIONS_METHOD = "OPTIONS";
     private static final String TOKEN_KEY = "token";
     private static final String EMAIL_KEY = "email";
-    private static final String[] PUBLIC_ROUTES = {"/api/v1/user/login", "/api/v1/user/verify/code", "/api/v1/user/register"};
+    private static final String[] PUBLIC_ROUTES = {"/api/v1/player/login", "/api/v1/player/verify/code", "/api/v1/player/register"};
 
 
     private final TokenProvider tokenProvider;

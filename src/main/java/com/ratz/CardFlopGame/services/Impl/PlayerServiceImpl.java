@@ -62,4 +62,10 @@ public class PlayerServiceImpl implements PlayerService {
             throw new ApiException("Error creating player");
         }
     }
+
+    @Override
+    public PlayerDTO getPlayerByEmail(String email) {
+        Player player = playerRepository.findByEmail(email);
+        return PlayerMapper.INSTANCE.playerToPlayerDTO(player);
+    }
 }

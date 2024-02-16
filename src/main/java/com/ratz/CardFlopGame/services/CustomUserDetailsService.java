@@ -1,31 +1,31 @@
 package com.ratz.CardFlopGame.services;
 
 import com.ratz.CardFlopGame.entity.Player;
+import com.ratz.CardFlopGame.entity.UserPrincipal;
 import com.ratz.CardFlopGame.repository.PlayerRepository;
-import com.ratz.CardFlopGame.services.Impl.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.ratz.CardFlopGame.repository.RoleRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final PlayerRepository playerRepository;
-
-    @Autowired
-    public CustomUserDetailsService(PlayerRepository playerRepository) {
-        this.playerRepository = playerRepository;
-    }
+    private final RoleRepository roleRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Player player = playerRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Player player = playerRepository.findByEmail(email);
 
-        // Aqui, você pode mapear seu objeto Player para um objeto UserDetails.
-        // Por exemplo, usando uma classe UserDetailsImpl que implementa UserDetails
-        return new UserDetailsImpl(player);
+        log.info("User found by email: {}", email);
+
+        if (player == null) throw new UsernameNotFoundException("User not found");
+        else return new UserPrincipal(player, roleRepository.getRoleByPlayerId(player.getId()).getPermission());
     }
 }

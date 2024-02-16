@@ -11,10 +11,10 @@ import java.util.Optional;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
-    String SELECT_ROLE_BY_ID_QUERY = "SELECT r.id, r.name, r.permission FROM Roles r JOIN UserRoles ur ON ur.role_id = r.id JOIN Players u ON u.id = ur.player_id WHERE u.id = :playerId";
+    String SELECT_ROLE_BY_ID_QUERY = "SELECT r.id, r.name, r.permission FROM Roles r JOIN Player_Roles ur ON ur.role_id = r.id JOIN Players u ON u.id = ur.player_id WHERE u.id = :playerId";
 
     @Query(value = SELECT_ROLE_BY_ID_QUERY, nativeQuery = true)
-    Optional<Role> getRoleByPlayerId(@Param("playerId") Long playerId);
+    Role getRoleByPlayerId(@Param("playerId") Long playerId);
 
     Optional<Role> findByName(String name);
 
