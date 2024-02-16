@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Map;
 
 import static java.time.LocalDateTime.now;
@@ -36,15 +38,19 @@ public class PlayerController {
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> createPlayer(@RequestBody @Valid Player player) {
 
-        PlayerDTO userDTO = playerService.createPlayer(player);
+        PlayerDTO playerDTO = playerService.createPlayer(player);
 
         return ResponseEntity.created(getURI())
                 .body(HttpResponse.builder()
                         .timeStamp(now().toString())
-                        .data(Map.of("user", userDTO))
-                        .message("User created")
+                        .data(Map.of("player", playerDTO))
+                        .message("Player created")
                         .statusCode(HttpStatus.CREATED.value())
                         .httpStatus(HttpStatus.CREATED)
                         .build());
+    }
+
+    private URI getURI() {
+        return URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/player/get/<playerId>").toUriString());
     }
 }
