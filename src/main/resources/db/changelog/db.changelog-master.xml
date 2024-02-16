@@ -1,0 +1,159 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-1">
+        <createTable tableName="friendships">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="friendships_pkey"/>
+            </column>
+            <column name="accepted" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="friendship_date" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="friend_id" type="BIGINT"/>
+            <column name="player_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-2">
+        <createTable tableName="players">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="players_pkey"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="enabled" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="not_locked" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="using_mfa" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-3">
+        <createTable tableName="profiles">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="profiles_pkey"/>
+            </column>
+            <column name="avatar_url" type="VARCHAR(255)"/>
+            <column name="bio" type="VARCHAR(255)"/>
+            <column name="birth_date" type="date"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="location" type="VARCHAR(255)"/>
+            <column name="losses" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wins" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="player_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-4">
+        <createTable tableName="card">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="card_pkey"/>
+            </column>
+            <column name="attack_points" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="health_points" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-5">
+        <createTable tableName="deck">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="deck_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="owner_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-6">
+        <createTable tableName="game">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="game_pkey"/>
+            </column>
+            <column name="end_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="start_time" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column name="total_moves" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="winner_id" type="VARCHAR(255)"/>
+            <column name="player_one_id" type="BIGINT"/>
+            <column name="player_two_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-7">
+        <addUniqueConstraint columnNames="player_id" constraintName="uk_a8yvmr0bu11f6c7jt2tovd5y9"
+                             tableName="profiles"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-8">
+        <createTable tableName="deck_cards">
+            <column name="deck_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="deck_cards_pkey"/>
+            </column>
+            <column name="cards_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="deck_cards_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-9">
+        <addForeignKeyConstraint baseColumnNames="deck_id" baseTableName="deck_cards"
+                                 constraintName="fk1ogu81r2q771hnmfn96vba9sy" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="deck" validate="true"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-10">
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="profiles"
+                                 constraintName="fk2nmly3ilrwcv5i2uwsv547aig" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="players" validate="true"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-11">
+        <addForeignKeyConstraint baseColumnNames="player_two_id" baseTableName="game"
+                                 constraintName="fkdug0cuv79n9lpgqpmjgjqsbjv" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="players" validate="true"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-12">
+        <addForeignKeyConstraint baseColumnNames="cards_id" baseTableName="deck_cards"
+                                 constraintName="fkdy2al3jt91643stu1m1nnx2p8" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="card" validate="true"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-13">
+        <addForeignKeyConstraint baseColumnNames="friend_id" baseTableName="friendships"
+                                 constraintName="fkesw5sxijej2e7q2aki9d4ds51" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="players" validate="true"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-14">
+        <addForeignKeyConstraint baseColumnNames="player_one_id" baseTableName="game"
+                                 constraintName="fkplhcp2lhav47j7di9w6b9k0v2" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="players" validate="true"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-15">
+        <addForeignKeyConstraint baseColumnNames="player_id" baseTableName="friendships"
+                                 constraintName="fkqgau0fwp14rsb777yvg0xb8yu" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="players" validate="true"/>
+    </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="1708046583696-16">
+        <addForeignKeyConstraint baseColumnNames="owner_id" baseTableName="deck"
+                                 constraintName="fkrry9ufnyxk7feeqo1o849mrau" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="players" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
