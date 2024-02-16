@@ -9,6 +9,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@Table(name = "decks")
 public class Deck {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
