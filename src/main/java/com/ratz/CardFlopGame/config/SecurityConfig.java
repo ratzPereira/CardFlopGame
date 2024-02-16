@@ -1,6 +1,5 @@
 package com.ratz.CardFlopGame.config;
 
-import com.ratz.CardFlopGame.filter.CustomAuthorizationFilter;
 import com.ratz.CardFlopGame.handler.CustomAccessDeniedHandler;
 import com.ratz.CardFlopGame.handler.CustomAuthenticationEntryPointHandler;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,7 @@ public class SecurityConfig {
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler entryPointHandler;
     private final UserDetailsService userDetailsService;
-    private final CustomAuthorizationFilter customAuthorizationFilter;
+    //private final CustomAuthorizationFilter customAuthorizationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

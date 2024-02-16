@@ -6,6 +6,8 @@ import com.ratz.CardFlopGame.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -13,7 +15,7 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public Role getRoleByPlayerId(Long playerId) {
+    public Optional<Role> getRoleByPlayerId(Long playerId) {
         return roleRepository.getRoleByPlayerId(playerId);
     }
 }
