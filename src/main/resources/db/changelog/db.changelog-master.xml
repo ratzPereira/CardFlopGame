@@ -156,4 +156,12 @@
                                  initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
                                  referencedColumnNames="id" referencedTableName="players" validate="true"/>
     </changeSet>
+    <changeSet author="Jo├úo Pereira (generated)" id="add-blocked-column-to-friendships-001">
+        <addColumn tableName="friendships">
+            <column name="blocked" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

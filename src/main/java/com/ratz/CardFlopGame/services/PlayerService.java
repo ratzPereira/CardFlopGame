@@ -8,6 +8,6 @@ public interface PlayerService {
 
     PlayerDTO createPlayer(Player player);
 
-    PlayerDTO getPlayerByEmail(String email);
+    Player getPlayerByEmail(String email);
 
 }

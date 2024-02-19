@@ -64,8 +64,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public PlayerDTO getPlayerByEmail(String email) {
-        Player player = playerRepository.findByEmail(email);
-        return PlayerMapper.INSTANCE.playerToPlayerDTO(player);
+    public Player getPlayerByEmail(String email) {
+        return playerRepository.findByEmail(email);
     }
 }

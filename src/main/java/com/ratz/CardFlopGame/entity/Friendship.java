@@ -21,6 +21,7 @@ public class Friendship {
     private LocalDateTime friendshipDate;
 
     private boolean accepted = false;
+    private boolean blocked = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id")

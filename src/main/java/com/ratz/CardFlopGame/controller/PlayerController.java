@@ -58,9 +58,9 @@ public class PlayerController {
     public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginFormDTO loginForm) {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getEmail(), loginForm.getPassword()));
-        PlayerDTO playerDTO = playerService.getPlayerByEmail(loginForm.getEmail());
+        Player player = playerService.getPlayerByEmail(loginForm.getEmail());
 
-        return sendResponse(playerDTO);
+        return sendResponse(PlayerMapper.INSTANCE.playerToPlayerDTO(player));
     }
 
     private URI getURI() {
@@ -68,7 +68,7 @@ public class PlayerController {
     }
 
     private UserPrincipal getUserPrincipal(PlayerDTO playerDTO) {
-        return new UserPrincipal(PlayerMapper.INSTANCE.playerDTOToPlayer(playerService.getPlayerByEmail(playerDTO.getEmail())), roleService.getRoleByPlayerId(playerDTO.getId()).getPermission());
+        return new UserPrincipal((playerService.getPlayerByEmail(playerDTO.getEmail())), roleService.getRoleByPlayerId(playerDTO.getId()).getPermission());
     }
 
     private ResponseEntity<HttpResponse> sendResponse(PlayerDTO playerDTO) {

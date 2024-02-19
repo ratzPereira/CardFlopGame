@@ -1,5 +1,6 @@
 package com.ratz.CardFlopGame.config;
 
+import com.ratz.CardFlopGame.filter.CustomAuthorizationFilter;
 import com.ratz.CardFlopGame.handler.CustomAccessDeniedHandler;
 import com.ratz.CardFlopGame.handler.CustomAuthenticationEntryPointHandler;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.OPTIONS;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -25,13 +27,13 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private static final String[] PUBLIC_URLS = {"/**"};
+    private static final String[] PUBLIC_URLS = {"/api/v1/player/login", "/api/v1/player/register"};
 
     private final BCryptPasswordEncoder encoder;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
     private final CustomAuthenticationEntryPointHandler entryPointHandler;
     private final UserDetailsService userDetailsService;
-    //private final CustomAuthorizationFilter customAuthorizationFilter;
+    private final CustomAuthorizationFilter customAuthorizationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,7 +45,7 @@ public class SecurityConfig {
         //http.authorizeHttpRequests(request -> request.requestMatchers(DELETE, "/customer/delete/**").hasAnyAuthority("DELETE:CUSTOMER"));
         http.exceptionHandling(exception -> exception.accessDeniedHandler(customAccessDeniedHandler).authenticationEntryPoint(entryPointHandler));
         http.authorizeHttpRequests(request -> request.anyRequest().authenticated());
-        //http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(customAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

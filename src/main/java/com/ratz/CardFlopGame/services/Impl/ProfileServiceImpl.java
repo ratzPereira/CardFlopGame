@@ -1,5 +1,7 @@
 package com.ratz.CardFlopGame.services.Impl;
 
+import com.ratz.CardFlopGame.entity.Profile;
+import com.ratz.CardFlopGame.repository.ProfileRepository;
 import com.ratz.CardFlopGame.services.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,4 +9,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class ProfileServiceImpl implements ProfileService {
+
+    private final ProfileRepository profileRepository;
+
+    @Override
+    public Profile getProfileByPlayerId(Long id) {
+        return profileRepository.getProfileByPlayerId(id);
+    }
 }
