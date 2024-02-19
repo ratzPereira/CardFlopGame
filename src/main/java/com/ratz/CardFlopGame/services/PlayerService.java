@@ -10,4 +10,6 @@ public interface PlayerService {
 
     Player getPlayerByEmail(String email);
 
+    Player getPlayerByUsername(String username);
+
 }

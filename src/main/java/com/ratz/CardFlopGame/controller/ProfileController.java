@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,8 +25,8 @@ import java.net.URI;
 @RequestMapping("/api/v1/player/profile")
 @Slf4j
 public class ProfileController {
-    private final PlayerMapper playerMapper;
 
+    private final PlayerMapper playerMapper;
     private final ProfileService profileService;
     private final PlayerService playerService;
 
@@ -37,23 +38,35 @@ public class ProfileController {
         Player player = playerService.getPlayerByEmail(currentUsername);
         Profile profile = profileService.getProfileByPlayerId(player.getId());
 
-        if (profile == null) {
+        return buildProfileResponse(player, profile);
+    }
 
-            log.error("Profile not found for player with id: " + player.getId());
 
-            ProfileResponseDTO emptyProfileDTO = new ProfileResponseDTO();
-            emptyProfileDTO.setUsername(player.getUsername());
-            emptyProfileDTO.setCreatedAt(player.getCreatedAt());
-            emptyProfileDTO.setFriends(player.getFriends());
-
-            return ResponseEntity.ok(emptyProfileDTO);
+    @GetMapping("/{username}")
+    public ResponseEntity<ProfileResponseDTO> getProfileByUsername(@PathVariable String username) {
+        Player player = playerService.getPlayerByUsername(username);
+        if (player == null) {
+            return ResponseEntity.notFound().build();
         }
 
-        ProfileResponseDTO profileResponseDTO = ProfileMapper.INSTANCE.profileToProfileDTO(profile);
+        Profile profile = profileService.getProfileByPlayerId(player.getId());
+        return buildProfileResponse(player, profile);
+    }
 
-        profileResponseDTO.setFriends(player.getFriends());
+
+    private ResponseEntity<ProfileResponseDTO> buildProfileResponse(Player player, Profile profile) {
+        ProfileResponseDTO profileResponseDTO;
+
+        if (profile == null) {
+            log.error("Profile not found for player with id: " + player.getId() + "setting up a new and empty profile");
+            profileResponseDTO = new ProfileResponseDTO();
+        } else {
+            profileResponseDTO = ProfileMapper.INSTANCE.profileToProfileDTO(profile);
+        }
+
         profileResponseDTO.setUsername(player.getUsername());
         profileResponseDTO.setCreatedAt(player.getCreatedAt());
+        profileResponseDTO.setFriends(player.getFriends()); // TODO change para DTO
 
         return ResponseEntity.ok(profileResponseDTO);
     }

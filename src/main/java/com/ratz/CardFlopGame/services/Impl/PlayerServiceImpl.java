@@ -67,4 +67,9 @@ public class PlayerServiceImpl implements PlayerService {
     public Player getPlayerByEmail(String email) {
         return playerRepository.findByEmail(email);
     }
+
+    @Override
+    public Player getPlayerByUsername(String username) {
+        return playerRepository.findByUsername(username).orElseThrow(() -> new ApiException("Player not found"));
+    }
 }
