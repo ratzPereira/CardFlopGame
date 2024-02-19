@@ -43,4 +43,17 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         friendshipRepository.save(friendship);
     }
+
+    public void acceptFriendRequest(Long friendshipId, Long playerId) {
+        Friendship friendship = friendshipRepository.findById(friendshipId)
+                .orElseThrow(() -> new ApiException("Friendship not found."));
+
+        if (!friendship.getFriend().getId().equals(playerId)) {
+            throw new ApiException("You can only accept friend requests sent to you.");
+        }
+
+        friendship.setAccepted(true);
+        friendshipRepository.save(friendship);
+    }
+
 }

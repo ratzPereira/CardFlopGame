@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static java.time.LocalTime.now;
 
@@ -41,6 +38,22 @@ public class FriendshipController {
         return ResponseEntity.ok(HttpResponse.builder()
                 .timeStamp(now().toString())
                 .message("Request sent successfully")
+                .httpStatus(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .build());
+    }
+
+    @PutMapping("/accept/{friendshipId}")
+    public ResponseEntity<HttpResponse> acceptFriendRequest(@PathVariable Long friendshipId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        Player player = playerService.getPlayerByEmail(currentUsername);
+        friendshipService.acceptFriendRequest(friendshipId, player.getId());
+
+        return ResponseEntity.ok(HttpResponse.builder()
+                .timeStamp(now().toString())
+                .message("Friend request accepted successfully")
                 .httpStatus(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .build());
