@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -53,7 +55,20 @@ public class ProfileController {
         return buildProfileResponse(player, profile);
     }
 
+    @GetMapping("/player/{playerId}")
+    public ResponseEntity<ProfileResponseDTO> getProfileByPlayerId(@PathVariable Long playerId) {
 
+        Player player = playerService.getPlayerById(playerId);
+        if (player == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Profile profile = profileService.getProfileByPlayerId(playerId);
+        return buildProfileResponse(player, profile);
+    }
+
+
+    //helper methods
     private ResponseEntity<ProfileResponseDTO> buildProfileResponse(Player player, Profile profile) {
         ProfileResponseDTO profileResponseDTO;
 
@@ -64,9 +79,16 @@ public class ProfileController {
             profileResponseDTO = ProfileMapper.INSTANCE.profileToProfileDTO(profile);
         }
 
+        Set<String> friendUsernames = player.getFriends().stream()
+                .map(friendship -> {
+                    return friendship.getFriend().getUsername();
+                })
+                .collect(Collectors.toSet());
+
         profileResponseDTO.setUsername(player.getUsername());
         profileResponseDTO.setCreatedAt(player.getCreatedAt());
-        profileResponseDTO.setFriends(player.getFriends()); // TODO change para DTO
+        profileResponseDTO.setFriends(friendUsernames);
+
 
         return ResponseEntity.ok(profileResponseDTO);
     }

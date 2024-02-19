@@ -1,6 +1,5 @@
 package com.ratz.CardFlopGame.DTO;
 
-import com.ratz.CardFlopGame.entity.Friendship;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -22,6 +21,6 @@ public class ProfileResponseDTO {
     //  Player
     private String username;
     private LocalDateTime createdAt;
-    private Set<Friendship> friends;
+    private Set<String> friends;
 
 }

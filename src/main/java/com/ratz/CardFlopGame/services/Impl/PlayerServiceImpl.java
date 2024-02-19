@@ -69,6 +69,11 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    public Player getPlayerById(Long id) {
+        return playerRepository.findById(id).orElseThrow(() -> new ApiException("Player not found"));
+    }
+
+    @Override
     public Player getPlayerByUsername(String username) {
         return playerRepository.findByUsername(username).orElseThrow(() -> new ApiException("Player not found"));
     }
