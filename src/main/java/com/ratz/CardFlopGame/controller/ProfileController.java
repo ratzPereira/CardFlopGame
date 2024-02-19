@@ -5,7 +5,7 @@ import com.ratz.CardFlopGame.DTO.ProfileResponseDTO;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.entity.Profile;
 import com.ratz.CardFlopGame.exception.ApiException;
-import com.ratz.CardFlopGame.mapper.PlayerMapper;
+import com.ratz.CardFlopGame.exception.ProfileAlreadyExistsException;
 import com.ratz.CardFlopGame.mapper.ProfileMapper;
 import com.ratz.CardFlopGame.mapper.ProfileResponseMapper;
 import com.ratz.CardFlopGame.services.PlayerService;
@@ -16,9 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -28,7 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProfileController {
 
-    private final PlayerMapper playerMapper;
     private final ProfileService profileService;
     private final PlayerService playerService;
 
@@ -42,7 +39,6 @@ public class ProfileController {
 
         return buildProfileResponse(player, profile);
     }
-
 
     @GetMapping("/{username}")
     public ResponseEntity<ProfileResponseDTO> getProfileByUsername(@PathVariable String username) {
@@ -75,7 +71,7 @@ public class ProfileController {
         Player player = playerService.getPlayerByEmail(currentUsername);
 
         if (profileService.getProfileByPlayerId(player.getId()) != null) {
-            throw new ApiException("Profile already exists for player with id: " + player.getId());
+            throw new ProfileAlreadyExistsException(player.getId());
         }
 
         Profile profile = ProfileMapper.INSTANCE.profileDTOToProfile(profileDTO);
@@ -127,7 +123,4 @@ public class ProfileController {
         return ResponseEntity.ok(profileResponseDTO);
     }
 
-    private URI getURI() {
-        return URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/v1/player/get/<playerId>").toUriString());
-    }
 }

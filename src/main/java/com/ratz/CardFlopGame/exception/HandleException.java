@@ -158,4 +158,16 @@ public class HandleException extends ResponseEntityExceptionHandler implements E
                 .httpStatus(HttpStatus.BAD_REQUEST)
                 .build(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ProfileAlreadyExistsException.class)
+    public ResponseEntity<HttpResponse> handleProfileAlreadyExistsException(ProfileAlreadyExistsException ex) {
+        log.error("Error message: {}", ex.getMessage());
+        return new ResponseEntity<>(HttpResponse.builder()
+                .timeStamp(now().toString())
+                .reason(ex.getMessage())
+                .developerMessage("Profile already exists for player")
+                .statusCode(HttpStatus.CONFLICT.value())
+                .httpStatus(HttpStatus.CONFLICT)
+                .build(), HttpStatus.CONFLICT);
+    }
 }
