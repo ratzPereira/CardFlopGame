@@ -1,40 +1,38 @@
 package com.ratz.CardFlopGame.mapper;
 
-import com.ratz.CardFlopGame.DTO.ProfileResponseDTO;
+import com.ratz.CardFlopGame.DTO.ProfileDTO;
 import com.ratz.CardFlopGame.entity.Profile;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-19T09:39:44-0100",
+    date = "2024-02-19T13:14:32-0100",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 18.0.2 (Amazon.com Inc.)"
 )
 @Component
 public class ProfileMapperImpl implements ProfileMapper {
 
     @Override
-    public ProfileResponseDTO profileToProfileDTO(Profile profile) {
+    public ProfileDTO profileToProfileDTO(Profile profile) {
         if ( profile == null ) {
             return null;
         }
 
-        ProfileResponseDTO profileResponseDTO = new ProfileResponseDTO();
+        ProfileDTO profileDTO = new ProfileDTO();
 
-        profileResponseDTO.setFirstName( profile.getFirstName() );
-        profileResponseDTO.setLastName( profile.getLastName() );
-        profileResponseDTO.setBio( profile.getBio() );
-        profileResponseDTO.setAvatarUrl( profile.getAvatarUrl() );
-        profileResponseDTO.setLocation( profile.getLocation() );
-        profileResponseDTO.setBirthDate( profile.getBirthDate() );
-        profileResponseDTO.setWins( profile.getWins() );
-        profileResponseDTO.setLosses( profile.getLosses() );
+        profileDTO.setFirstName( profile.getFirstName() );
+        profileDTO.setLastName( profile.getLastName() );
+        profileDTO.setBio( profile.getBio() );
+        profileDTO.setAvatarUrl( profile.getAvatarUrl() );
+        profileDTO.setLocation( profile.getLocation() );
+        profileDTO.setBirthDate( profile.getBirthDate() );
 
-        return profileResponseDTO;
+        return profileDTO;
     }
 
     @Override
-    public Profile profileDTOToProfile(ProfileResponseDTO profileDTO) {
+    public Profile profileDTOToProfile(ProfileDTO profileDTO) {
         if ( profileDTO == null ) {
             return null;
         }
@@ -47,8 +45,8 @@ public class ProfileMapperImpl implements ProfileMapper {
         profile.setAvatarUrl( profileDTO.getAvatarUrl() );
         profile.setLocation( profileDTO.getLocation() );
         profile.setBirthDate( profileDTO.getBirthDate() );
-        profile.setWins( profileDTO.getWins() );
-        profile.setLosses( profileDTO.getLosses() );
+
+        setPlayerAndOtherFields( profileDTO, profile );
 
         return profile;
     }

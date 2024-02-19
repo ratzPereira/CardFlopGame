@@ -1,10 +1,13 @@
 package com.ratz.CardFlopGame.controller;
 
+import com.ratz.CardFlopGame.DTO.ProfileDTO;
 import com.ratz.CardFlopGame.DTO.ProfileResponseDTO;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.entity.Profile;
+import com.ratz.CardFlopGame.exception.ApiException;
 import com.ratz.CardFlopGame.mapper.PlayerMapper;
 import com.ratz.CardFlopGame.mapper.ProfileMapper;
+import com.ratz.CardFlopGame.mapper.ProfileResponseMapper;
 import com.ratz.CardFlopGame.services.PlayerService;
 import com.ratz.CardFlopGame.services.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -67,6 +67,24 @@ public class ProfileController {
         return buildProfileResponse(player, profile);
     }
 
+    @PostMapping
+    public ResponseEntity<ProfileResponseDTO> createProfile(@RequestBody ProfileDTO profileDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        Player player = playerService.getPlayerByEmail(currentUsername);
+
+        if (profileService.getProfileByPlayerId(player.getId()) != null) {
+            throw new ApiException("Profile already exists for player with id: " + player.getId());
+        }
+
+        Profile profile = ProfileMapper.INSTANCE.profileDTOToProfile(profileDTO);
+        profile.setPlayer(player);
+
+        Profile createdProfile = profileService.createProfile(profileDTO, player);
+
+        return buildProfileResponse(player, createdProfile);
+    }
 
     //helper methods
     private ResponseEntity<ProfileResponseDTO> buildProfileResponse(Player player, Profile profile) {
@@ -76,13 +94,11 @@ public class ProfileController {
             log.error("Profile not found for player with id: " + player.getId() + "setting up a new and empty profile");
             profileResponseDTO = new ProfileResponseDTO();
         } else {
-            profileResponseDTO = ProfileMapper.INSTANCE.profileToProfileDTO(profile);
+            profileResponseDTO = ProfileResponseMapper.INSTANCE.profileToProfileDTO(profile);
         }
 
         Set<String> friendUsernames = player.getFriends().stream()
-                .map(friendship -> {
-                    return friendship.getFriend().getUsername();
-                })
+                .map(friendship -> friendship.getFriend().getUsername())
                 .collect(Collectors.toSet());
 
         profileResponseDTO.setUsername(player.getUsername());
