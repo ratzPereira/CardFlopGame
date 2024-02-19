@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
+
+    boolean existsByPlayerIdAndFriendId(Long playerId, Long friendId);
 }

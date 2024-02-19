@@ -1,11 +1,13 @@
 package com.ratz.CardFlopGame.controller;
 
+import com.ratz.CardFlopGame.DTO.FriendshipDTO;
 import com.ratz.CardFlopGame.DTO.ProfileDTO;
 import com.ratz.CardFlopGame.DTO.ProfileResponseDTO;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.entity.Profile;
 import com.ratz.CardFlopGame.exception.ApiException;
 import com.ratz.CardFlopGame.exception.ProfileAlreadyExistsException;
+import com.ratz.CardFlopGame.mapper.FriendshipMapper;
 import com.ratz.CardFlopGame.mapper.ProfileMapper;
 import com.ratz.CardFlopGame.mapper.ProfileResponseMapper;
 import com.ratz.CardFlopGame.services.PlayerService;
@@ -111,13 +113,13 @@ public class ProfileController {
             profileResponseDTO = ProfileResponseMapper.INSTANCE.profileToProfileDTO(profile);
         }
 
-        Set<String> friendUsernames = player.getFriends().stream()
-                .map(friendship -> friendship.getFriend().getUsername())
+        Set<FriendshipDTO> friendshipDTOs = player.getFriends().stream()
+                .map(FriendshipMapper.INSTANCE::friendshipToFriendshipDTO)
                 .collect(Collectors.toSet());
 
         profileResponseDTO.setUsername(player.getUsername());
         profileResponseDTO.setCreatedAt(player.getCreatedAt());
-        profileResponseDTO.setFriends(friendUsernames);
+        profileResponseDTO.setFriends(friendshipDTOs);
 
 
         return ResponseEntity.ok(profileResponseDTO);

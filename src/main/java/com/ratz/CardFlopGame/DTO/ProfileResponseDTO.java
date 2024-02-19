@@ -21,6 +21,6 @@ public class ProfileResponseDTO {
     //  Player
     private String username;
     private LocalDateTime createdAt;
-    private Set<String> friends;
+    private Set<FriendshipDTO> friends;
 
 }
