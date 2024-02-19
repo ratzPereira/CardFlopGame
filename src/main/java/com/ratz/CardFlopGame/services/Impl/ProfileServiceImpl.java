@@ -27,4 +27,18 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setPlayer(player);
         return profileRepository.save(profile);
     }
+
+    @Override
+    public Profile updateProfile(ProfileDTO profileDTO, Player player) {
+
+        Profile profile = profileRepository.getProfileByPlayerId(player.getId());
+        profile.setFirstName(profileDTO.getFirstName());
+        profile.setLastName(profileDTO.getLastName());
+        profile.setBio(profileDTO.getBio());
+        profile.setAvatarUrl(profileDTO.getAvatarUrl());
+        profile.setLocation(profileDTO.getLocation());
+        profile.setBirthDate(profileDTO.getBirthDate());
+
+        return profileRepository.save(profile);
+    }
 }

@@ -9,4 +9,6 @@ public interface ProfileService {
     Profile getProfileByPlayerId(Long id);
 
     Profile createProfile(ProfileDTO profileDTO, Player player);
+
+    Profile updateProfile(ProfileDTO profileDTO, Player player);
 }

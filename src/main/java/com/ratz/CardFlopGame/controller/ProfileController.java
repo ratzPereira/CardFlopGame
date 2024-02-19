@@ -86,6 +86,24 @@ public class ProfileController {
         return buildProfileResponse(player, createdProfile);
     }
 
+    @PutMapping
+    public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO profileDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        Player player = playerService.getPlayerByEmail(currentUsername);
+        Profile existingProfile = profileService.getProfileByPlayerId(player.getId());
+
+        if (existingProfile == null) {
+            throw new ApiException("Profile not found for player with id: " + player.getId() + "please create a profile first");
+        }
+
+        Profile updatedProfile = profileService.updateProfile(profileDTO, player);
+
+        ProfileDTO profileResponseDTO = ProfileMapper.INSTANCE.profileToProfileDTO(updatedProfile);
+        return ResponseEntity.ok(profileResponseDTO);
+    }
+
     //helper methods
     private ResponseEntity<ProfileResponseDTO> buildProfileResponse(Player player, Profile profile) {
         ProfileResponseDTO profileResponseDTO;
