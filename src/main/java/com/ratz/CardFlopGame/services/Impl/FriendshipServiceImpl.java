@@ -23,7 +23,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     private final FriendshipRepository friendshipRepository;
     private final PlayerRepository playerRepository;
 
-    @Override
+
     public void sendFriendRequest(Long senderId, Long targetUserId) {
 
         log.info("Sending friend request from user {} to user {}", senderId, targetUserId);
@@ -108,7 +108,6 @@ public class FriendshipServiceImpl implements FriendshipService {
         log.info("User {} unblocked friendship {}", playerId, friendshipId);
     }
 
-    @Override
     public Page<FriendshipDTO> listFriends(Long userId, int page, int size) {
         log.info("Listing friends for user {}", userId);
 
@@ -123,5 +122,24 @@ public class FriendshipServiceImpl implements FriendshipService {
             friendshipDTO.setFriendshipDate(friendship.getFriendshipDate());
             return friendshipDTO;
         });
+    }
+
+    public Page<FriendshipDTO> listAllFriendships(Long userId, int page, int size) {
+        log.info("Listing all friendships for user {}", userId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Friendship> friendships = friendshipRepository.findByPlayerIdOrFriendId(userId, userId, pageable);
+
+        return friendships.map(this::convertToFriendshipDTO);
+    }
+
+    private FriendshipDTO convertToFriendshipDTO(Friendship friendship) {
+        FriendshipDTO friendshipDTO = new FriendshipDTO();
+
+        friendshipDTO.setFriendId(friendship.getFriend().getId());
+        friendshipDTO.setFriendUsername(friendship.getFriend().getUsername());
+        friendshipDTO.setAccepted(friendship.isAccepted());
+        friendshipDTO.setBlocked(friendship.isBlocked());
+        friendshipDTO.setFriendshipDate(friendship.getFriendshipDate());
+        return friendshipDTO;
     }
 }

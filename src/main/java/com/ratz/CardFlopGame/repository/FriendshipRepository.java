@@ -13,4 +13,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Long> {
 
     Page<Friendship> findByPlayerIdOrFriendIdAndAcceptedIsTrue(Long playerId, Long friendId, Pageable pageable);
 
+    Page<Friendship> findByPlayerIdOrFriendId(Long playerId, Long friendId, Pageable pageable);
+
+
 }

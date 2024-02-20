@@ -131,4 +131,18 @@ public class FriendshipController {
 
         return ResponseEntity.ok(friends);
     }
+
+    @GetMapping("/all-friendships")
+    public ResponseEntity<Page<FriendshipDTO>> listAllFriendships(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                  @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        log.info("Listing all friendships for page: {} and size: {}", page, size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Player player = playerService.getPlayerByEmail(currentUsername);
+
+        Page<FriendshipDTO> friendships = friendshipService.listAllFriendships(player.getId(), page, size);
+
+        return ResponseEntity.ok(friendships);
+    }
 }

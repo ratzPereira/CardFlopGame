@@ -16,4 +16,6 @@ public interface FriendshipService {
     void blockFriend(Long friendshipId, Long playerId);
 
     Page<FriendshipDTO> listFriends(Long userId, int page, int size);
+
+    Page<FriendshipDTO> listAllFriendships(Long userId, int page, int size);
 }
