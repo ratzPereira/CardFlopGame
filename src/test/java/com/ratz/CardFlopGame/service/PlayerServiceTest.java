@@ -4,6 +4,7 @@ import com.ratz.CardFlopGame.DTO.PlayerDTO;
 import com.ratz.CardFlopGame.DTO.RegisterFormDTO;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.entity.Role;
+import com.ratz.CardFlopGame.exception.ApiException;
 import com.ratz.CardFlopGame.repository.PlayerRepository;
 import com.ratz.CardFlopGame.repository.RoleRepository;
 import com.ratz.CardFlopGame.services.PlayerService;
@@ -22,6 +23,8 @@ import java.util.Optional;
 
 import static com.ratz.CardFlopGame.enums.RoleType.ROLE_PLAYER;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -95,5 +98,80 @@ public class PlayerServiceTest {
         assertThat(playerArgumentCaptor.getValue().getPassword()).isEqualTo("encodedPassword");
     }
 
+    @Test
+    void whenCreatePlayerWithExistingEmail_thenThrowException() {
+        RegisterFormDTO registerFormDTO = new RegisterFormDTO();
+        registerFormDTO.setEmail("existing@example.com");
+        registerFormDTO.setUsername("newUser");
+        registerFormDTO.setPassword("password");
 
+        when(playerRepository.existsByEmail(registerFormDTO.getEmail())).thenReturn(true);
+
+        assertThrows(ApiException.class, () -> playerService.createPlayer(registerFormDTO));
+    }
+
+    @Test
+    void whenCreatePlayerWithExistingUsername_thenThrowException() {
+        RegisterFormDTO registerFormDTO = new RegisterFormDTO();
+        registerFormDTO.setEmail("new@example.com");
+        registerFormDTO.setUsername("existingUser");
+        registerFormDTO.setPassword("password");
+
+        when(playerRepository.existsByUsername(registerFormDTO.getUsername())).thenReturn(true);
+
+        assertThrows(ApiException.class, () -> playerService.createPlayer(registerFormDTO));
+    }
+
+    @Test
+    void whenCreatePlayer_thenPasswordIsEncoded() {
+        RegisterFormDTO registerFormDTO = new RegisterFormDTO();
+        registerFormDTO.setEmail("new@example.com");
+        registerFormDTO.setUsername("existingUser");
+        registerFormDTO.setPassword("password");
+
+        Role playerRole = new Role();
+        playerRole.setName(ROLE_PLAYER.name());
+
+        when(roleRepository.findByName(ROLE_PLAYER.name())).thenReturn(Optional.of(playerRole));
+        when(encoder.encode(registerFormDTO.getPassword())).thenReturn("encodedPassword");
+
+        playerService.createPlayer(registerFormDTO);
+
+        verify(encoder).encode("password");
+        verify(playerRepository).save(playerArgumentCaptor.capture());
+        assertEquals("encodedPassword", playerArgumentCaptor.getValue().getPassword());
+    }
+
+    @Test
+    void whenGetPlayerById_thenPlayerShouldBeFound() {
+        Long playerId = 1L;
+        Player player = new Player();
+        player.setId(playerId);
+        player.setEmail("user@example.com");
+        when(playerRepository.findById(playerId)).thenReturn(Optional.of(player));
+
+        Player found = playerService.getPlayerById(playerId);
+
+        assertEquals(playerId, found.getId());
+    }
+
+    @Test
+    void whenGetPlayerByUsername_thenPlayerShouldBeFound() {
+        String username = "user";
+        Player player = new Player();
+        player.setUsername(username);
+        when(playerRepository.findByUsername(username)).thenReturn(Optional.of(player));
+
+        Player found = playerService.getPlayerByUsername(username);
+
+        assertEquals(username, found.getUsername());
+    }
+
+    @Test
+    void whenGetPlayerByNonExistingId_thenThrowException() {
+        Long nonExistingId = 999L;
+        when(playerRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        assertThrows(ApiException.class, () -> playerService.getPlayerById(nonExistingId));
+    }
 }
