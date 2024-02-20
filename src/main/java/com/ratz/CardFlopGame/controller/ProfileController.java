@@ -67,6 +67,7 @@ public class ProfileController {
 
     @PostMapping
     public ResponseEntity<ProfileResponseDTO> createProfile(@RequestBody ProfileDTO profileDTO) {
+        log.info("Received request to create profile for username: {}", SecurityContextHolder.getContext().getAuthentication().getName());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
@@ -86,6 +87,7 @@ public class ProfileController {
 
     @PutMapping
     public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO profileDTO) {
+        log.info("Received request to update profile for username: {}", SecurityContextHolder.getContext().getAuthentication().getName());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 

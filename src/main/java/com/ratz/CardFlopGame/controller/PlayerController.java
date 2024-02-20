@@ -2,6 +2,7 @@ package com.ratz.CardFlopGame.controller;
 
 import com.ratz.CardFlopGame.DTO.LoginFormDTO;
 import com.ratz.CardFlopGame.DTO.PlayerDTO;
+import com.ratz.CardFlopGame.DTO.RegisterFormDTO;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.entity.UserPrincipal;
 import com.ratz.CardFlopGame.mapper.PlayerMapper;
@@ -40,9 +41,10 @@ public class PlayerController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<HttpResponse> createPlayer(@RequestBody @Valid Player player) {
+    public ResponseEntity<HttpResponse> createPlayer(@RequestBody @Valid RegisterFormDTO registerFormDTO) {
 
-        PlayerDTO playerDTO = playerService.createPlayer(player);
+        log.info("Attempting to register a new player with email: {}", registerFormDTO.getEmail());
+        PlayerDTO playerDTO = playerService.createPlayer(registerFormDTO);
 
         return ResponseEntity.created(getURI())
                 .body(HttpResponse.builder()
@@ -56,6 +58,8 @@ public class PlayerController {
 
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginFormDTO loginForm) {
+
+        log.info("Attempting to login player with email: {}", loginForm.getEmail());
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginForm.getEmail(), loginForm.getPassword()));
         Player player = playerService.getPlayerByEmail(loginForm.getEmail());
