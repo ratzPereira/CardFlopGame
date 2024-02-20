@@ -48,6 +48,8 @@ public class PlayerServiceImpl implements PlayerService {
                     .orElseThrow(() -> new ApiException("Role not found"));
 
             player.getRoles().add(playerRole);
+            player.setEmail(registerFormDTO.getEmail());
+            player.setUsername(registerFormDTO.getUsername());
 
             // Encode password
             player.setPassword(encoder.encode(registerFormDTO.getPassword()));
