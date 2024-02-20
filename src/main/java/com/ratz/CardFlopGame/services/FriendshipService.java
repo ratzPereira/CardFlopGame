@@ -18,4 +18,8 @@ public interface FriendshipService {
     Page<FriendshipDTO> listFriends(Long userId, int page, int size);
 
     Page<FriendshipDTO> listAllFriendships(Long userId, int page, int size);
+
+    Page<FriendshipDTO> listSentFriendRequests(Long userId, int page, int size);
+
+    Page<FriendshipDTO> listReceivedFriendRequests(Long userId, int page, int size);
 }

@@ -132,6 +132,20 @@ public class FriendshipServiceImpl implements FriendshipService {
         return friendships.map(this::convertToFriendshipDTO);
     }
 
+    public Page<FriendshipDTO> listSentFriendRequests(Long userId, int page, int size) {
+        log.info("Listing sent friendship requests for user {}", userId);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Friendship> friendships = friendshipRepository.findByPlayerIdAndAcceptedIsFalse(userId, pageable);
+        return friendships.map(this::convertToFriendshipDTO);
+    }
+
+    public Page<FriendshipDTO> listReceivedFriendRequests(Long userId, int page, int size) {
+        log.info("Listing received friendship requests for user {}", userId);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Friendship> friendships = friendshipRepository.findByFriendIdAndAcceptedIsFalse(userId, pageable);
+        return friendships.map(this::convertToFriendshipDTO);
+    }
+
     private FriendshipDTO convertToFriendshipDTO(Friendship friendship) {
         FriendshipDTO friendshipDTO = new FriendshipDTO();
 

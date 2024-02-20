@@ -145,4 +145,32 @@ public class FriendshipController {
 
         return ResponseEntity.ok(friendships);
     }
+
+    @GetMapping("/sent-requests")
+    public ResponseEntity<Page<FriendshipDTO>> listSentFriendRequests(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                      @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        log.info("Listing sent friend requests for page: {} and size: {}", page, size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Player player = playerService.getPlayerByEmail(currentUsername);
+
+        Page<FriendshipDTO> sentRequests = friendshipService.listSentFriendRequests(player.getId(), page, size);
+
+        return ResponseEntity.ok(sentRequests);
+    }
+
+    @GetMapping("/received-requests")
+    public ResponseEntity<Page<FriendshipDTO>> listReceivedFriendRequests(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                                          @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        log.info("Listing received friend requests for page: {} and size: {}", page, size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Player player = playerService.getPlayerByEmail(currentUsername);
+
+        Page<FriendshipDTO> receivedRequests = friendshipService.listReceivedFriendRequests(player.getId(), page, size);
+
+        return ResponseEntity.ok(receivedRequests);
+    }
 }
