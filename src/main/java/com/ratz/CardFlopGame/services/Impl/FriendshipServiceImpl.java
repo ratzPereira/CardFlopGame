@@ -66,7 +66,7 @@ public class FriendshipServiceImpl implements FriendshipService {
     public void removeFriend(Long friendshipId, Long playerId) {
 
         log.info("Removing friendship {} by user {}", friendshipId, playerId);
-        
+
         Friendship friendship = friendshipRepository.findById(friendshipId)
                 .orElseThrow(() -> new ApiException("Friendship not found."));
 
@@ -76,4 +76,31 @@ public class FriendshipServiceImpl implements FriendshipService {
 
         friendshipRepository.delete(friendship);
     }
+
+    public void blockFriend(Long friendshipId, Long playerId) {
+        Friendship friendship = friendshipRepository.findById(friendshipId)
+                .orElseThrow(() -> new ApiException("Friendship not found."));
+
+        if (!friendship.getPlayer().getId().equals(playerId) && !friendship.getFriend().getId().equals(playerId)) {
+            throw new ApiException("Not authorized to block this friend.");
+        }
+
+        friendship.setBlocked(true);
+        friendshipRepository.save(friendship);
+        log.info("User {} blocked friendship {}", playerId, friendshipId);
+    }
+
+    public void unblockFriend(Long friendshipId, Long playerId) {
+        Friendship friendship = friendshipRepository.findById(friendshipId)
+                .orElseThrow(() -> new ApiException("Friendship not found."));
+
+        if (!friendship.getPlayer().getId().equals(playerId) && !friendship.getFriend().getId().equals(playerId)) {
+            throw new ApiException("Not authorized to unblock this friend.");
+        }
+
+        friendship.setBlocked(false);
+        friendshipRepository.save(friendship);
+        log.info("User {} unblocked friendship {}", playerId, friendshipId);
+    }
+
 }

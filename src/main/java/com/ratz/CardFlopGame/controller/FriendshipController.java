@@ -69,7 +69,7 @@ public class FriendshipController {
     @DeleteMapping("/remove/{friendshipId}")
     public ResponseEntity<HttpResponse> removeFriend(@PathVariable Long friendshipId) {
         log.info("Processing remove friend with friendship ID: {}", friendshipId);
-        
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
 
@@ -84,4 +84,35 @@ public class FriendshipController {
                 .build());
     }
 
+    @PutMapping("/block/{friendshipId}")
+    public ResponseEntity<HttpResponse> blockFriend(@PathVariable Long friendshipId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Player player = playerService.getPlayerByEmail(currentUsername);
+
+        friendshipService.blockFriend(friendshipId, player.getId());
+
+        return ResponseEntity.ok(HttpResponse.builder()
+                .timeStamp(now().toString())
+                .message("Friend blocked successfully")
+                .httpStatus(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .build());
+    }
+
+    @PutMapping("/unblock/{friendshipId}")
+    public ResponseEntity<HttpResponse> unblockFriend(@PathVariable Long friendshipId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Player player = playerService.getPlayerByEmail(currentUsername);
+
+        friendshipService.unblockFriend(friendshipId, player.getId());
+
+        return ResponseEntity.ok(HttpResponse.builder()
+                .timeStamp(now().toString())
+                .message("Friend unblocked successfully")
+                .httpStatus(HttpStatus.OK)
+                .statusCode(HttpStatus.OK.value())
+                .build());
+    }
 }
