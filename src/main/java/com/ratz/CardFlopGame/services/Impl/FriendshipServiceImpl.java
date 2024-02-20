@@ -1,5 +1,6 @@
 package com.ratz.CardFlopGame.services.Impl;
 
+import com.ratz.CardFlopGame.DTO.FriendshipDTO;
 import com.ratz.CardFlopGame.entity.Friendship;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.exception.ApiException;
@@ -8,6 +9,10 @@ import com.ratz.CardFlopGame.repository.PlayerRepository;
 import com.ratz.CardFlopGame.services.FriendshipService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -103,4 +108,20 @@ public class FriendshipServiceImpl implements FriendshipService {
         log.info("User {} unblocked friendship {}", playerId, friendshipId);
     }
 
+    @Override
+    public Page<FriendshipDTO> listFriends(Long userId, int page, int size) {
+        log.info("Listing friends for user {}", userId);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Friendship> friendships = friendshipRepository.findByPlayerIdOrFriendIdAndAcceptedIsTrue(userId, userId, pageable);
+
+        return friendships.map(friendship -> {
+            FriendshipDTO friendshipDTO = new FriendshipDTO();
+            friendshipDTO.setFriendId(friendship.getFriend().getId());
+            friendshipDTO.setFriendUsername(friendship.getFriend().getUsername());
+            friendshipDTO.setBlocked(friendship.isBlocked());
+            friendshipDTO.setFriendshipDate(friendship.getFriendshipDate());
+            return friendshipDTO;
+        });
+    }
 }

@@ -1,5 +1,8 @@
 package com.ratz.CardFlopGame.services;
 
+import com.ratz.CardFlopGame.DTO.FriendshipDTO;
+import org.springframework.data.domain.Page;
+
 public interface FriendshipService {
 
     void sendFriendRequest(Long senderId, Long targetUserId);
@@ -11,4 +14,6 @@ public interface FriendshipService {
     void unblockFriend(Long friendshipId, Long playerId);
 
     void blockFriend(Long friendshipId, Long playerId);
+
+    Page<FriendshipDTO> listFriends(Long userId, int page, int size);
 }

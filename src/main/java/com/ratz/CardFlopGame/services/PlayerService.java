@@ -14,5 +14,4 @@ public interface PlayerService {
     Player getPlayerById(Long id);
 
     Player getPlayerByUsername(String username);
-
 }

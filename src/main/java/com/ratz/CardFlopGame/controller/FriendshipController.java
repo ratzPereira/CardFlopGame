@@ -1,5 +1,6 @@
 package com.ratz.CardFlopGame.controller;
 
+import com.ratz.CardFlopGame.DTO.FriendshipDTO;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.exception.ApiException;
 import com.ratz.CardFlopGame.response.HttpResponse;
@@ -7,6 +8,7 @@ import com.ratz.CardFlopGame.services.FriendshipService;
 import com.ratz.CardFlopGame.services.PlayerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -114,5 +116,19 @@ public class FriendshipController {
                 .httpStatus(HttpStatus.OK)
                 .statusCode(HttpStatus.OK.value())
                 .build());
+    }
+
+    @GetMapping("/friends")
+    public ResponseEntity<Page<FriendshipDTO>> listFriends(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                           @RequestParam(value = "size", defaultValue = "10") int size) {
+
+        log.info("Listing friends for page: {} and size: {}", page, size);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        Player player = playerService.getPlayerByEmail(currentUsername);
+
+        Page<FriendshipDTO> friends = friendshipService.listFriends(player.getId(), page, size);
+
+        return ResponseEntity.ok(friends);
     }
 }
