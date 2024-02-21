@@ -5,7 +5,6 @@ import com.ratz.CardFlopGame.DTO.ProfileDTO;
 import com.ratz.CardFlopGame.DTO.ProfileResponseDTO;
 import com.ratz.CardFlopGame.entity.Player;
 import com.ratz.CardFlopGame.entity.Profile;
-import com.ratz.CardFlopGame.exception.ApiException;
 import com.ratz.CardFlopGame.exception.ProfileAlreadyExistsException;
 import com.ratz.CardFlopGame.mapper.FriendshipMapper;
 import com.ratz.CardFlopGame.mapper.ProfileMapper;
@@ -92,11 +91,6 @@ public class ProfileController {
         String currentUsername = authentication.getName();
 
         Player player = playerService.getPlayerByEmail(currentUsername);
-        Profile existingProfile = profileService.getProfileByPlayerId(player.getId());
-
-        if (existingProfile == null) {
-            throw new ApiException("Profile not found for player with id: " + player.getId() + "please create a profile first");
-        }
 
         Profile updatedProfile = profileService.updateProfile(profileDTO, player);
 
